@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Month;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class UserMealsUtil {
     public static void main(String[] args) {
@@ -21,10 +22,13 @@ public class UserMealsUtil {
                 new UserMeal(LocalDateTime.of(2020, Month.JANUARY, 31, 20, 0), "Ужин", 410)
         );
 
+        System.out.println("Result BY Cycles:");
         List<UserMealWithExcess> mealsTo = filteredByCycles(meals, LocalTime.of(7, 0), LocalTime.of(12, 0), 2000);
         mealsTo.forEach(System.out::println);
 
-//        System.out.println(filteredByStreams(meals, LocalTime.of(7, 0), LocalTime.of(12, 0), 2000));
+        System.out.println("\nResult BY Streams:");
+        List<UserMealWithExcess> mealsToCycles = filteredByStreams(meals, LocalTime.of(7, 0), LocalTime.of(12, 0), 2000);
+        mealsToCycles.forEach(System.out::println);
     }
 
     public static List<UserMealWithExcess> filteredByCycles(List<UserMeal> meals, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
@@ -53,9 +57,20 @@ public class UserMealsUtil {
     public static List<UserMealWithExcess> filteredByStreams(List<UserMeal> meals, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
         // TODO Implement by streams
 
+        Map<String, Integer> caloriesEachDay = meals.stream()
+                .collect(Collectors.toMap(
+                        p->p.getDateTime().toLocalDate().toString(),
+                        k->k.getCalories(),
+                        (a, b) -> a+b
+                ));
 
-        return null;
+        List<UserMealWithExcess> filteredMeals =  meals.stream()
+                .filter(x -> caloriesEachDay.containsKey(x.getDateTime().toLocalDate().toString()))
+                .filter(x -> caloriesEachDay.get(x.getDateTime().toLocalDate().toString())>=caloriesPerDay)
+                .filter(x-> TimeUtil.isBetweenHalfOpen(x.getDateTime().toLocalTime(), startTime, endTime))
+                .map(x-> new UserMealWithExcess(x.getDateTime(), x.getDescription(), x.getCalories(), true))
+                .collect(Collectors.toList());
+
+        return filteredMeals;
     }
-
-
 }
