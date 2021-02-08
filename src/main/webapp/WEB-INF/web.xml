@@ -6,14 +6,49 @@
 
     <display-name>Topjava</display-name>
 
+    <!--  list Users Servlet  -->
     <servlet>
-        <servlet-name>userServlet</servlet-name>
+        <servlet-name>UserServlet</servlet-name>
         <servlet-class>ru.javawebinar.topjava.web.UserServlet</servlet-class>
         <load-on-startup>0</load-on-startup>
     </servlet>
     <servlet-mapping>
-        <servlet-name>userServlet</servlet-name>
+        <servlet-name>UserServlet</servlet-name>
         <url-pattern>/users</url-pattern>
     </servlet-mapping>
+
+    <!--  list Meals Servlet  -->
+    <servlet>
+        <servlet-name>MealServlet</servlet-name>
+        <servlet-class>ru.javawebinar.topjava.web.MealServlet</servlet-class>
+        <load-on-startup>0</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>MealServlet</servlet-name>
+        <url-pattern>/meals</url-pattern>
+    </servlet-mapping>
+
+    <!--     add Meal Servlet    -->
+    <servlet>
+        <servlet-name>MealAddServlet</servlet-name>
+        <servlet-class>ru.javawebinar.topjava.web.MealAddServlet</servlet-class>
+        <load-on-startup>0</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>MealAddServlet</servlet-name>
+        <url-pattern>/meals_add</url-pattern>
+    </servlet-mapping>
+
+    <!--update Meal Servlet-->
+    <servlet>
+        <servlet-name>MealUpdateServlet</servlet-name>
+        <servlet-class>ru.javawebinar.topjava.web.MealUpdateServlet</servlet-class>
+        <load-on-startup>0</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>MealUpdateServlet</servlet-name>
+        <url-pattern>/meals_update</url-pattern>
+    </servlet-mapping>
+
 
 </web-app>

@@ -1,0 +1,27 @@
+
+.userMeals {
+    border-spacing: 0.5rem;
+    border-collapse: collapse;
+    width: 40%;
+    border-color: black;
+    border-style: solid;
+}
+
+.userMealsHeader {
+    background: beige;
+    font-size: x-large;
+}
+
+.userMealsHeaderRow {
+    text-align: center;
+}
+
+td, th {
+    border: 1px solid;
+    padding: 1rem;
+    text-align: left;
+}
+
+input {
+    padding: 12px 20px;
+}
