@@ -1,7 +1,7 @@
 package ru.javawebinar.topjava.repository;
 
 
-import ru.javawebinar.topjava.model.MealTo;
+import ru.javawebinar.topjava.model.Meal;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -11,15 +11,13 @@ import java.util.List;
  */
 public interface MealRepository {
 
-    List<MealTo> findAllMeals();
+    List<Meal> findAll();
 
-    MealTo getById(Integer id);
+    Meal getById(Integer id);
 
-    void deleteMealById(Integer id);
+    void deleteById(Integer id);
 
-    void addMeal(LocalDateTime dateTime, String description, int calories);
+    Meal add(Meal meal);
 
-    void updateMeal(Integer id, LocalDateTime dateTime, String description, int calories);
-
-
+    Meal update(Integer id, LocalDateTime dateTime, String description, int calories);
 }

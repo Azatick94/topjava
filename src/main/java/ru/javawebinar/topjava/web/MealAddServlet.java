@@ -1,7 +1,9 @@
 package ru.javawebinar.topjava.web;
 
+import ru.javawebinar.topjava.dao.MealsInMemoryDB;
+import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.model.MealTo;
-import ru.javawebinar.topjava.service.MealService;
+import ru.javawebinar.topjava.util.MealsUtil;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -9,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 public class MealAddServlet extends HttpServlet {
@@ -22,10 +25,12 @@ public class MealAddServlet extends HttpServlet {
             String description = request.getParameter("description");
             int calories = Integer.parseInt(request.getParameter("calories"));
 
-            new MealService().addMeal(date, description, calories);
+            MealsInMemoryDB.getInstance().add(new Meal(date, description, calories));
 
-            List<MealTo> meals = new MealService().findAllMeals();
-            request.setAttribute("mealsList", meals);
+            List<Meal> meals = MealsInMemoryDB.getInstance().findAll();
+            List<MealTo> mealsTo = MealsUtil.filteredByStreams(meals, LocalTime.MIN, LocalTime.MAX, 2000);
+
+            request.setAttribute("mealsList", mealsTo);
 
             request.getRequestDispatcher("/meals_success.jsp").forward(request, response);
         } catch (Exception e) {
