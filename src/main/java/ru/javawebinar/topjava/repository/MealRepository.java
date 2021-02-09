@@ -13,6 +13,8 @@ public interface MealRepository {
 
     List<MealTo> findAllMeals();
 
+    MealTo getById(Integer id);
+
     void deleteMealById(Integer id);
 
     void addMeal(LocalDateTime dateTime, String description, int calories);
