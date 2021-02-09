@@ -13,7 +13,7 @@
 
 <h2 style="color: red; font-weight: bold">Bad request !!! </h2><br>
 
-<h3><a href="meals?action=listMeal">Get List of Meals</a></h3>
+<h3><a href="meals">Get List of Meals</a></h3>
 
 </body>
 

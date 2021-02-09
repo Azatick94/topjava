@@ -1,9 +1,8 @@
 
-.userMeals {
+table {
     border-spacing: 0.5rem;
     border-collapse: collapse;
     width: 40%;
-    border-color: black;
     border-style: solid;
 }
 
@@ -17,7 +16,7 @@
 }
 
 td, th {
-    border: 1px solid;
+    border: 1px solid black;
     padding: 1rem;
     text-align: left;
 }

@@ -16,21 +16,15 @@
 <table style="with: 100%">
     <tr>
         <th>DateTime:</th>
-        <th><label>
-            <input type="datetime-local" name="date" placeholder="date">
-        </label></th>
+        <td><label><input type="datetime-local" name="date" placeholder="date"></label></td>
     </tr>
     <tr>
         <th>Description:</th>
-        <th><label>
-            <input type="text" name="description" placeholder="Завтрак/Обед/Ужин">
-        </label></th>
+        <td><label><input type="text" name="description" placeholder="Завтрак/Обед/Ужин"></label></td>
     </tr>
     <tr>
         <th>Calories:</th>
-        <th><label>
-            <input type="number" name="calories" placeholder="кДж">
-        </label></th>
+        <td><label><input type="number" name="calories" placeholder="кДж"></label></td>
     </tr>
 </table>
 
@@ -38,7 +32,7 @@
 <input type="submit" value="Save" style="height: 30px; width: 100px"/><br><br>
 </form>
 
-<input type="submit" value="Cancel" onclick="window.location='meals?action=listMeal'" style="height: 30px; width: 100px"/>
+<input type="submit" value="Cancel" onclick="window.location='meals'" style="height: 30px; width: 100px"/>
 
 </body>
 </html>
