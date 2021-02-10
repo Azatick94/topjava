@@ -8,45 +8,45 @@
 
     <!--  list Users Servlet  -->
     <servlet>
-        <servlet-name>UserServlet</servlet-name>
+        <servlet-name>userServlet</servlet-name>
         <servlet-class>ru.javawebinar.topjava.web.UserServlet</servlet-class>
         <load-on-startup>0</load-on-startup>
     </servlet>
     <servlet-mapping>
-        <servlet-name>UserServlet</servlet-name>
+        <servlet-name>userServlet</servlet-name>
         <url-pattern>/users</url-pattern>
     </servlet-mapping>
 
     <!--  list Meals Servlet  -->
     <servlet>
-        <servlet-name>MealServlet</servlet-name>
+        <servlet-name>mealServlet</servlet-name>
         <servlet-class>ru.javawebinar.topjava.web.MealServlet</servlet-class>
         <load-on-startup>0</load-on-startup>
     </servlet>
     <servlet-mapping>
-        <servlet-name>MealServlet</servlet-name>
+        <servlet-name>mealServlet</servlet-name>
         <url-pattern>/meals</url-pattern>
     </servlet-mapping>
 
-    <!--     add Meal Servlet    -->
+    <!--  add Meal Servlet  -->
     <servlet>
-        <servlet-name>MealAddServlet</servlet-name>
-        <servlet-class>ru.javawebinar.topjava.web.MealAddServlet</servlet-class>
+        <servlet-name>mealAddServlet</servlet-name>
+        <servlet-class>ru.javawebinar.topjava.web.MealServlet</servlet-class>
         <load-on-startup>0</load-on-startup>
     </servlet>
     <servlet-mapping>
-        <servlet-name>MealAddServlet</servlet-name>
+        <servlet-name>mealAddServlet</servlet-name>
         <url-pattern>/meals_add</url-pattern>
     </servlet-mapping>
 
-    <!--update Meal Servlet-->
+    <!--  update Meal Servlet  -->
     <servlet>
-        <servlet-name>MealUpdateServlet</servlet-name>
-        <servlet-class>ru.javawebinar.topjava.web.MealUpdateServlet</servlet-class>
+        <servlet-name>mealUpdateServlet</servlet-name>
+        <servlet-class>ru.javawebinar.topjava.web.MealServlet</servlet-class>
         <load-on-startup>0</load-on-startup>
     </servlet>
     <servlet-mapping>
-        <servlet-name>MealUpdateServlet</servlet-name>
+        <servlet-name>mealUpdateServlet</servlet-name>
         <url-pattern>/meals_update</url-pattern>
     </servlet-mapping>
 

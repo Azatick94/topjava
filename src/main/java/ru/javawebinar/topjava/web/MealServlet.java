@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 
@@ -28,6 +29,8 @@ public class MealServlet extends HttpServlet {
             if (action.equalsIgnoreCase("delete")) {
                 int userId = Integer.parseInt(request.getParameter("userId"));
                 MealsInMemoryDB.getInstance().deleteById(userId);
+                response.sendRedirect("meals");
+                return;
             }
         }
 
@@ -38,4 +41,31 @@ public class MealServlet extends HttpServlet {
 
         request.getRequestDispatcher(LIST_MEAL).forward(request, response);
     }
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+        // post request - update or create new Meal in DB
+        request.setCharacterEncoding("UTF-8");
+        String action = request.getParameter("action");
+
+        if (action.equals("add")) {
+            LocalDateTime date = LocalDateTime.parse(request.getParameter("date"));
+            String description = request.getParameter("description");
+            int calories = Integer.parseInt(request.getParameter("calories"));
+
+            MealsInMemoryDB.getInstance().add(new Meal(date, description, calories));
+        } else if (action.equals("update")) {
+            Integer id = Integer.valueOf(request.getParameter("userId"));
+
+            LocalDateTime date = LocalDateTime.parse(request.getParameter("date"));
+            String description = request.getParameter("description");
+            int calories = Integer.parseInt(request.getParameter("calories"));
+
+            MealsInMemoryDB.getInstance().update(id, date, description, calories);
+        }
+
+        response.sendRedirect("meals");
+    }
+
 }

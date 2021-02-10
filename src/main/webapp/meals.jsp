@@ -1,6 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="javatime" uri="http://sargue.net/jsptags/time" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt" %>
 
 <html lang="ru">
 <head>
@@ -37,7 +37,9 @@
             <td><c:out value="${meal.calories}"/></td>
 
             <form action="${pageContext.request.contextPath}/meals_update"></form>
-            <td><a href='meals_update.jsp?userId=<c:out value="${meal.id}"/>'>Update</a></td>
+            <td><a href='meals_update.jsp?userId=<c:out value="${meal.id}"/>&description=${meal.description}
+                        &calories=${meal.calories}
+                        &dateTime=${meal.dateTime}'>Update</a></td>
             <td><a href="meals?action=delete&userId=<c:out value="${meal.id}"/>">Delete</a></td>
         </tr>
     </c:forEach>
