@@ -27,10 +27,22 @@ public class MealsUtil {
             new Meal(LocalDateTime.of(2020, Month.JANUARY, 31, 20, 0), "Ужин", 410)
     );
 
+    /**
+     * @param meals
+     * @param caloriesPerDay
+     * @return all list of mealTos
+     */
     public static List<MealTo> getTos(Collection<Meal> meals, int caloriesPerDay) {
         return filterByPredicate(meals, caloriesPerDay, meal -> true);
     }
 
+    /**
+     * @param meals
+     * @param caloriesPerDay
+     * @param startTime
+     * @param endTime
+     * @return filtered by time list of mealTos
+     */
     public static List<MealTo> getFilteredTos(Collection<Meal> meals, int caloriesPerDay, LocalTime startTime, LocalTime endTime) {
         return filterByPredicate(meals, caloriesPerDay, meal -> DateTimeUtil.isBetweenHalfOpen(meal.getTime(), startTime, endTime));
     }
