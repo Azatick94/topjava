@@ -90,6 +90,7 @@ public class InMemoryMealRepository implements MealRepository {
     public List<Meal> getAll(int userId) {
         log.info("getAll");
         return repository.values().stream()
+                .filter(m->m.getUserId()==userId)
                 .sorted(Comparator.comparing(Meal::getDateTime).reversed())
                 .collect(Collectors.toList());
     }
@@ -106,6 +107,7 @@ public class InMemoryMealRepository implements MealRepository {
     public List<Meal> getFiltered(LocalDate startDate, LocalDate endDate, int userId) {
         log.info("getFiltered");
         return repository.values().stream()
+                .filter(m->m.getUserId()==userId)
                 .filter(m -> DateTimeUtil.isBetweenHalfOpen(m.getDate(), startDate, endDate))
                 .sorted(Comparator.comparing(Meal::getDateTime).reversed())
                 .collect(Collectors.toList());
