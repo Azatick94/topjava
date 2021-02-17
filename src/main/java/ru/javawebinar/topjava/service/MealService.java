@@ -3,7 +3,6 @@ package ru.javawebinar.topjava.service;
 import org.springframework.stereotype.Service;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
-import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import java.util.List;
 
@@ -19,11 +18,7 @@ public class MealService {
     }
 
     public Meal create(Meal meal, int userId) {
-        Meal createdMeal = repository.save(meal, userId);
-        if (createdMeal == null) {
-            throw new NotFoundException("Meal was not created for userId: " + userId);
-        }
-        return createdMeal;
+        return repository.save(meal, userId);
     }
 
     public void delete(int id, int userId) {

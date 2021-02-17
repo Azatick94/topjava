@@ -32,23 +32,25 @@ public class InMemoryMealRepository implements MealRepository {
     public Meal save(Meal meal, int userId) {
         log.info("save {}", meal);
 
-        try {
-            if (meal.isNew()) {
-                meal.setId(counter.incrementAndGet());
+        if (meal.isNew()) {
+            meal.setId(counter.incrementAndGet());
+            meal.setUserId(userId);
+            repository.put(meal.getId(), meal);
+            return meal;
+        }
+
+        // handle case: update, but not present in storage
+        Meal queryMealInDB = repository.get(meal.getId());
+        if (queryMealInDB != null) {
+            if (queryMealInDB.getUserId() == userId) {
                 meal.setUserId(userId);
-                repository.put(meal.getId(), meal);
-                return meal;
-            }
-            // handle case: update, but not present in storage
-            if (meal.getUserId() == userId) {
                 return repository.computeIfPresent(meal.getId(), (id, oldMeal) -> meal);
             } else {
                 return null;
             }
-        } catch (NullPointerException e) {
+        } else {
             return null;
         }
-
     }
 
     @Override
@@ -57,16 +59,15 @@ public class InMemoryMealRepository implements MealRepository {
 
         Meal meal = repository.get(id);
 
-        try {
+        if (meal != null) {
             if (meal.getUserId() == userId) {
                 return repository.remove(id) != null;
             } else {
                 return false;
             }
-        } catch (NullPointerException e) {
+        } else {
             return false;
         }
-
     }
 
     @Override
@@ -74,16 +75,15 @@ public class InMemoryMealRepository implements MealRepository {
         log.info("get {}", id);
         Meal meal = repository.get(id);
 
-        try {
+        if (meal != null) {
             if (meal.getUserId() == userId) {
                 return meal;
             } else {
                 return null;
             }
-        } catch (NullPointerException e) {
+        } else {
             return null;
         }
-
     }
 
     @Override
@@ -100,14 +100,14 @@ public class InMemoryMealRepository implements MealRepository {
      * @param startDate
      * @param endDate
      * @param userId
-     * @return
+     * @return List of Meals filtered by Date
      */
     @Override
     public List<Meal> getFiltered(LocalDate startDate, LocalDate endDate, int userId) {
         log.info("getFiltered");
-
-        return getAll(userId).stream()
+        return repository.values().stream()
                 .filter(m -> DateTimeUtil.isBetweenHalfOpen(m.getDate(), startDate, endDate))
+                .sorted(Comparator.comparing(Meal::getDateTime).reversed())
                 .collect(Collectors.toList());
     }
 
