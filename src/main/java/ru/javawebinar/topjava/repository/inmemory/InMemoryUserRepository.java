@@ -17,13 +17,13 @@ import java.util.stream.Collectors;
 public class InMemoryUserRepository implements UserRepository {
     private static final Logger log = LoggerFactory.getLogger(InMemoryUserRepository.class);
 
-    private final Map<Integer, User> repository = new ConcurrentHashMap<>();
+    private final Map<Integer, User> usersMap = new ConcurrentHashMap<>();
     private final AtomicInteger counter = new AtomicInteger(0);
 
     @Override
     public boolean delete(int id) {
         log.info("delete {}", id);
-        return repository.remove(id) != null;
+        return usersMap.remove(id) != null;
     }
 
     @Override
@@ -31,23 +31,23 @@ public class InMemoryUserRepository implements UserRepository {
         log.info("save {}", user);
         if (user.isNew()) {
             user.setId(counter.incrementAndGet());
-            repository.put(user.getId(), user);
+            usersMap.put(user.getId(), user);
             return user;
         }
         // handle case: update, but not present in storage
-        return repository.computeIfPresent(user.getId(), (id, oldMeal) -> user);
+        return usersMap.computeIfPresent(user.getId(), (id, oldMeal) -> user);
     }
 
     @Override
     public User get(int id) {
         log.info("get {}", id);
-        return repository.get(id);
+        return usersMap.get(id);
     }
 
     @Override
     public List<User> getAll() {
         log.info("getAll");
-        return repository.values().stream()
+        return usersMap.values().stream()
                 .sorted(Comparator.comparing(User::getName).thenComparing(User::getEmail))
                 .collect(Collectors.toList());
     }
@@ -55,7 +55,7 @@ public class InMemoryUserRepository implements UserRepository {
     @Override
     public User getByEmail(String email) {
         log.info("getByEmail {}", email);
-        return repository.values().stream()
+        return usersMap.values().stream()
                 .filter(u -> u.getEmail().equalsIgnoreCase(email)).findAny().orElse(null);
     }
 }
