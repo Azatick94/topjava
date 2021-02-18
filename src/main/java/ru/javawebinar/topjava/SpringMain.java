@@ -2,9 +2,9 @@ package ru.javawebinar.topjava;
 
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.model.Role;
 import ru.javawebinar.topjava.model.User;
+import ru.javawebinar.topjava.to.MealTo;
 import ru.javawebinar.topjava.web.meal.MealRestController;
 import ru.javawebinar.topjava.web.user.AdminRestController;
 
@@ -24,7 +24,7 @@ public class SpringMain {
             // testing MealRestController.
             System.out.println("\n--- Testing MealRestController");
             MealRestController mealRestControllerBean = appCtx.getBean(MealRestController.class);
-            List<Meal> mealList = mealRestControllerBean.getAll();
+            List<MealTo> mealList = mealRestControllerBean.getAll();
             mealList.forEach(System.out::println);
 
 
