@@ -20,6 +20,9 @@ public class InMemoryUserRepository implements UserRepository {
     private final Map<Integer, User> usersMap = new ConcurrentHashMap<>();
     private final AtomicInteger counter = new AtomicInteger(0);
 
+    public static final int USER_ID = 1;
+    public static final int ADMIN_ID = 1;
+
     @Override
     public boolean delete(int id) {
         log.info("delete {}", id);
