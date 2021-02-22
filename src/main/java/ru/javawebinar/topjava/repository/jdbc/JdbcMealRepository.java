@@ -13,9 +13,7 @@ import ru.javawebinar.topjava.repository.MealRepository;
 import ru.javawebinar.topjava.util.DateTimeUtil;
 
 import java.time.LocalDateTime;
-import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Repository
 public class JdbcMealRepository implements MealRepository {
@@ -44,8 +42,7 @@ public class JdbcMealRepository implements MealRepository {
 
     @Override
     public List<Meal> getAll(int userId) {
-        List<Meal> mealsAll = jdbcTemplate.query("SELECT * FROM meals", ROW_MAPPER);
-        return prepareSortedMealList(mealsAll);
+        return jdbcTemplate.query("SELECT * FROM meals ORDER BY datetime DESC", ROW_MAPPER);
     }
 
     @Override
@@ -54,15 +51,9 @@ public class JdbcMealRepository implements MealRepository {
         String endDateTimePrepared = DateTimeUtil.toString(endDateTime);
 
         String query = "SELECT * FROM meals WHERE user_id=? AND " +
-                "(datetime >= '" + startDateTimePrepared + "' AND datetime < '" + endDateTimePrepared + "')";
-        List<Meal> mealsFiltered = jdbcTemplate.query(query, ROW_MAPPER, userId);
-        return prepareSortedMealList(mealsFiltered);
-    }
-
-    public List<Meal> prepareSortedMealList(List<Meal> meals) {
-        return meals.stream().
-                sorted(Comparator.comparing(Meal::getDateTime).reversed())
-                .collect(Collectors.toList());
+                "(datetime >= '" + startDateTimePrepared + "' AND datetime < '" + endDateTimePrepared + "') " +
+                "ORDER BY datetime DESC";
+        return jdbcTemplate.query(query, ROW_MAPPER, userId);
     }
 
     @Override
