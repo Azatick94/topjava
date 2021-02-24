@@ -2,7 +2,9 @@ package ru.javawebinar.topjava.service;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.slf4j.bridge.SLF4JBridgeHandler;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
@@ -11,16 +13,16 @@ import ru.javawebinar.topjava.MealTestData;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.List;
 
 import static org.junit.Assert.assertThrows;
-import static ru.javawebinar.topjava.MealTestData.ID;
-import static ru.javawebinar.topjava.MealTestData.USER_ID;
+
+import static ru.javawebinar.topjava.MealTestData.*;
+import static ru.javawebinar.topjava.UserTestData.ADMIN_ID;
+import static ru.javawebinar.topjava.UserTestData.USER_ID;
 
 @ContextConfiguration({
         "classpath:spring/spring-app.xml",
@@ -30,60 +32,116 @@ import static ru.javawebinar.topjava.MealTestData.USER_ID;
 @Sql(scripts = "classpath:db/populateDB.sql", config = @SqlConfig(encoding = "UTF-8"))
 public class MealServiceTest {
 
+    static {
+        // Only for postgres driver logging
+        // It uses java.util.logging and logged via jul-to-slf4j bridge
+        SLF4JBridgeHandler.install();
+    }
+
     @Autowired
-    MealService mealService;
+    private MealService mealService;
 
     @Test
-    public void get() {
-        Meal mealCalculated = mealService.get(ID, USER_ID);
-        Meal mealExpected = MealTestData.mealsAllReversedSortedTest.get(6);
-        assertThat(mealCalculated).isEqualTo(mealExpected);
+    public void getExistingMeal() {
+        Meal mealCalculated = mealService.get(MEAL_ID_FOR_USER, USER_ID);
+        assertMatch(mealCalculated, meal1);
     }
 
     @Test
-    public void getAll() {
+    public void getNonExistingMeal() {
+        assertThrows(NotFoundException.class, () -> mealService.get(9999999, USER_ID));
+    }
+
+    @Test
+    public void getAnotherUserMeal() {
+        assertThrows(NotFoundException.class, () -> mealService.get(MEAL_ID_FOR_ADMIN, USER_ID));
+    }
+
+    @Test
+    public void getAllForUser() {
         List<Meal> mealsCalculated = mealService.getAll(USER_ID);
-        List<Meal> mealsExpected = MealTestData.mealsAllReversedSortedTest;
-        assertThat(mealsCalculated).isEqualTo(mealsExpected);
+        assertMatch(mealsCalculated, mealsAllForUser);
+    }
+
+    @Test
+    public void getAllForAdmin() {
+        List<Meal> mealsCalculated = mealService.getAll(ADMIN_ID);
+        assertMatch(mealsCalculated, mealsAllForAdmin);
     }
 
     @Test
     public void getBetweenInclusive() {
-        List<Meal> mealsCalculated = mealService.getBetweenInclusive(LocalDate.of(2020, 1, 30),
+        List<Meal> mealsCalculated = mealService.getBetweenInclusive(
+                LocalDate.of(2020, 1, 30),
                 LocalDate.of(2020, 1, 30), USER_ID);
-        List<Meal> mealsExpected = MealTestData.mealsGetBetweenTest;
-        assertThat(mealsCalculated).isEqualTo(mealsExpected);
+        assertMatch(mealsCalculated, MealTestData.meals30thJanuary2020UserData);
+    }
+
+    @Test
+    public void getBetweenInclusiveTestNull() {
+        List<Meal> mealsCalculated = mealService.getBetweenInclusive(null, null, USER_ID);
+        assertMatch(mealsCalculated, mealsAllForUser);
+    }
+
+    @Test
+    public void getBetweenInclusiveTestLeftNull() {
+        List<Meal> mealsCalculated = mealService.getBetweenInclusive(null, LocalDate.of(2020, 1, 30), USER_ID);
+        assertMatch(mealsCalculated, MealTestData.meals30thJanuary2020UserData);
+    }
+
+    @Test
+    public void getBetweenInclusiveTestRightNull() {
+        List<Meal> mealsCalculated = mealService.getBetweenInclusive(LocalDate.of(2020, 1, 31), null, USER_ID);
+        assertMatch(mealsCalculated, meals31thJanuary2020UserData);
     }
 
     @Test
     public void delete() {
-        mealService.delete(ID, USER_ID);
-        assertThrows(NotFoundException.class, () -> mealService.get(ID, USER_ID));
+        mealService.delete(MEAL_ID_FOR_USER, USER_ID);
+        assertThrows(NotFoundException.class, () -> mealService.get(MEAL_ID_FOR_USER, USER_ID));
+    }
+
+    @Test
+    public void deleteAnotherUserMeal() {
+        assertThrows(NotFoundException.class, () -> mealService.delete(MEAL_ID_FOR_ADMIN, USER_ID));
     }
 
     @Test
     public void update() {
-        Meal mealExpected = new Meal();
-        mealExpected.setId(ID);
-        mealExpected.setDateTime(LocalDateTime.of(2222, Month.JANUARY, 1, 1, 1));
-        mealExpected.setDescription("Updated Value");
-        mealExpected.setCalories(999);
+        Meal mealToUpdate = getUpdated(MEAL_ID_FOR_USER);
 
         // updating value
-        mealService.update(mealExpected, USER_ID);
+        mealService.update(mealToUpdate, USER_ID);
 
-        Meal mealCalculated = mealService.get(ID, USER_ID);
-        assertThat(mealExpected).isEqualTo(mealCalculated);
+        Meal mealExpected = new Meal(MEAL_ID_FOR_USER, LocalDateTime.of(2222, Month.JANUARY, 1, 1, 1), "Updated Value", 999);
+        Meal mealCalculated = mealService.get(MEAL_ID_FOR_USER, USER_ID);
+
+        assertMatch(mealCalculated, mealExpected);
+    }
+
+    @Test
+    public void updateAnotherUserMeal() {
+        Meal mealToUpdate = getUpdated(MEAL_ID_FOR_USER);
+        // updating value
+        assertThrows(NotFoundException.class, () -> mealService.update(mealToUpdate, ADMIN_ID));
     }
 
     @Test
     public void create() {
-        // TODO
-        Meal mealToCreate = new Meal(LocalDateTime.of(2000, Month.JANUARY, 1, 1, 1), "Created_Meal", 1000);
+        Meal created = mealService.create(getNew(), USER_ID);
+        Integer newId = created.getId();
+        Meal newMeal = getNew();
+        newMeal.setId(newId);
 
-        Meal mealExpected = mealService.create(mealToCreate, USER_ID);
-        assertThat(mealExpected.getId()).isEqualTo(100009);
+        assertMatch(created, newMeal);
+        assertMatch(mealService.get(newId, USER_ID), newMeal);
+
     }
 
-
+    @Test
+    public void createDuplicated() {
+        Meal newMeal = getNew();
+        newMeal.setDateTime(meal1.getDateTime());
+        assertThrows(DataAccessException.class, () -> mealService.create(newMeal, USER_ID));
+    }
 }
