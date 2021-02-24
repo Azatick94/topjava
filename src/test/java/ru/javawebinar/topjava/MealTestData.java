@@ -22,14 +22,14 @@ public class MealTestData {
     public static final Meal meal6 = new Meal(100007, LocalDateTime.of(2020, Month.JANUARY, 31, 13, 0), "Обед", 500);
     public static final Meal meal7 = new Meal(100008, LocalDateTime.of(2020, Month.JANUARY, 31, 20, 0), "Ужин", 410);
 
-    public static final Meal mealAdmin1 = new Meal(100009, LocalDateTime.of(2015, Month.JUNE, 1, 14, 0), "Админ ланч", 510);
-    public static final Meal mealAdmin2 = new Meal(100010, LocalDateTime.of(2015, Month.JUNE, 1, 21, 0), "Админ ужин", 1500);
+    public static final Meal adminMeal1 = new Meal(100009, LocalDateTime.of(2015, Month.JUNE, 1, 14, 0), "Админ ланч", 510);
+    public static final Meal adminMeal2 = new Meal(100010, LocalDateTime.of(2015, Month.JUNE, 1, 21, 0), "Админ ужин", 1500);
 
-    public static final List<Meal> mealsAllForUser = Arrays.asList(meal7, meal6, meal5, meal4, meal3, meal2, meal1);
-    public static final List<Meal> mealsAllForAdmin = Arrays.asList(mealAdmin2, mealAdmin1);
+    public static final List<Meal> AllUserMeals = Arrays.asList(meal7, meal6, meal5, meal4, meal3, meal2, meal1);
+    public static final List<Meal> AllAdminMeals = Arrays.asList(adminMeal2, adminMeal1);
 
-    public static final List<Meal> meals30thJanuary2020UserData = Arrays.asList(meal3, meal2, meal1);
-    public static final List<Meal> meals31thJanuary2020UserData = Arrays.asList(meal7, meal6, meal5, meal4);
+    public static final List<Meal> january30th2020UserMeals = Arrays.asList(meal3, meal2, meal1);
+    public static final List<Meal> january31th2020UserMeals = Arrays.asList(meal7, meal6, meal5, meal4);
 
     public static Meal getNew() {
         return new Meal(LocalDateTime.of(2000, Month.JANUARY, 1, 1, 1), "Created_Meal", 1000);
@@ -45,11 +45,10 @@ public class MealTestData {
     }
 
     public static void assertMatch(Meal actual, Meal expected) {
-        assertThat(actual).usingRecursiveComparison().ignoringFields().isEqualTo(expected);
+        assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
     }
 
     public static void assertMatch(Iterable<Meal> actual, Iterable<Meal> expected) {
         assertThat(actual).usingElementComparatorIgnoringFields().isEqualTo(expected);
     }
-
 }

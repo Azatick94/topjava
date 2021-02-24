@@ -60,13 +60,13 @@ public class MealServiceTest {
     @Test
     public void getAllForUser() {
         List<Meal> mealsCalculated = mealService.getAll(USER_ID);
-        assertMatch(mealsCalculated, mealsAllForUser);
+        assertMatch(mealsCalculated, AllUserMeals);
     }
 
     @Test
     public void getAllForAdmin() {
         List<Meal> mealsCalculated = mealService.getAll(ADMIN_ID);
-        assertMatch(mealsCalculated, mealsAllForAdmin);
+        assertMatch(mealsCalculated, AllAdminMeals);
     }
 
     @Test
@@ -74,25 +74,25 @@ public class MealServiceTest {
         List<Meal> mealsCalculated = mealService.getBetweenInclusive(
                 LocalDate.of(2020, 1, 30),
                 LocalDate.of(2020, 1, 30), USER_ID);
-        assertMatch(mealsCalculated, MealTestData.meals30thJanuary2020UserData);
+        assertMatch(mealsCalculated, MealTestData.january30th2020UserMeals);
     }
 
     @Test
     public void getBetweenInclusiveTestNull() {
         List<Meal> mealsCalculated = mealService.getBetweenInclusive(null, null, USER_ID);
-        assertMatch(mealsCalculated, mealsAllForUser);
+        assertMatch(mealsCalculated, AllUserMeals);
     }
 
     @Test
     public void getBetweenInclusiveTestLeftNull() {
         List<Meal> mealsCalculated = mealService.getBetweenInclusive(null, LocalDate.of(2020, 1, 30), USER_ID);
-        assertMatch(mealsCalculated, MealTestData.meals30thJanuary2020UserData);
+        assertMatch(mealsCalculated, MealTestData.january30th2020UserMeals);
     }
 
     @Test
     public void getBetweenInclusiveTestRightNull() {
         List<Meal> mealsCalculated = mealService.getBetweenInclusive(LocalDate.of(2020, 1, 31), null, USER_ID);
-        assertMatch(mealsCalculated, meals31thJanuary2020UserData);
+        assertMatch(mealsCalculated, january31th2020UserMeals);
     }
 
     @Test
