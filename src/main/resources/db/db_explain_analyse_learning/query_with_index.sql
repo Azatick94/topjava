@@ -1,0 +1,8 @@
+CREATE INDEX IF NOT EXISTS meals_idx ON meals (user_id);
+
+EXPLAIN ANALYZE
+SELECT *
+FROM meals
+WHERE user_id = 10000
+  AND date_time BETWEEN '2015-02-10' AND '2015-05-20'
+ORDER BY date_time DESC;
