@@ -102,7 +102,6 @@ public class MealServiceTest {
                 service.create(new Meal(null, meal1.getDateTime(), "duplicate", 100), USER_ID));
     }
 
-
     @Test
     public void get() {
         Meal actual = service.get(ADMIN_MEAL_ID, ADMIN_ID);
@@ -139,7 +138,6 @@ public class MealServiceTest {
 
     @Test
     public void getBetweenInclusive() {
-
         List<Meal> mealList = service.getBetweenInclusive(
                 LocalDate.of(2020, Month.JANUARY, 30),
                 LocalDate.of(2020, Month.JANUARY, 30), USER_ID);

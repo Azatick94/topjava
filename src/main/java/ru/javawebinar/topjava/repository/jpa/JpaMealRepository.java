@@ -36,7 +36,7 @@ public class JpaMealRepository implements MealRepository {
                     .setParameter("id", meal.getId())
                     .setParameter("user_id", userId)
                     .executeUpdate();
-            if (result==0) {
+            if (result == 0) {
                 throw new NotFoundException("UPDATE WAS NOT SUCCESSFUL");
             } else {
                 return meal;
