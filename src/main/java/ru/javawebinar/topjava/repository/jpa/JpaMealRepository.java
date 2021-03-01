@@ -1,12 +1,10 @@
 package ru.javawebinar.topjava.repository.jpa;
 
-import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.MealRepository;
-import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -22,27 +20,41 @@ public class JpaMealRepository implements MealRepository {
     @Override
     @Transactional
     public Meal save(Meal meal, int userId) {
-        User u = em.getReference(User.class, userId);
-        meal.setUser(u);
-
         if (meal.isNew()) {
+            User u = em.getReference(User.class, userId);
+            meal.setUser(u);
             em.persist(meal);
+            return meal;
         } else {
-            int result = em.createNamedQuery(Meal.UPDATE)
-                    .setParameter("description", meal.getDescription())
-                    .setParameter("calories", meal.getCalories())
-                    .setParameter("date_time", meal.getDateTime())
-                    .setParameter("id", meal.getId())
-                    .setParameter("user_id", userId)
-                    .executeUpdate();
-            if (result == 0) {
-                throw new NotFoundException("UPDATE WAS NOT SUCCESSFUL");
+            Meal found = em.find(Meal.class, meal.getId());
+            if (found.getUser().getId() == userId) {
+                meal.setUser(found.getUser());
+                return em.merge(meal);
             } else {
-                return meal;
+                return null;
             }
-            //            return em.merge(meal);
         }
-        return meal;
+//        if (meal.isNew()) {
+//            User u = em.getReference(User.class, userId);
+//            meal.setUser(u);
+//            em.persist(meal);
+//        } else {
+//            int result = em.createNamedQuery(Meal.UPDATE)
+//                    .setParameter("description", meal.getDescription())
+//                    .setParameter("calories", meal.getCalories())
+//                    .setParameter("date_time", meal.getDateTime())
+//                    .setParameter("id", meal.getId())
+//                    .setParameter("user_id", userId)
+//                    .executeUpdate();
+//            if (result == 0) {
+//                return null;
+//            } else {
+//                return meal;
+//            }
+//            //            return em.merge(meal);
+//        }
+//        return meal;
+
     }
 
     @Override
@@ -56,11 +68,17 @@ public class JpaMealRepository implements MealRepository {
 
     @Override
     public Meal get(int id, int userId) {
-        List<Meal> result = em.createNamedQuery(Meal.GET_BY_ID_USER_ID, Meal.class)
-                .setParameter("id", id)
-                .setParameter("user_id", userId)
-                .getResultList();
-        return DataAccessUtils.singleResult(result);
+        Meal meal = em.find(Meal.class, id);
+        if (meal != null) {
+            return meal.getUser().getId() == userId ? meal : null;
+        } else {
+            return null;
+        }
+//        List<Meal> result = em.createNamedQuery(Meal.GET_BY_ID_USER_ID, Meal.class)
+//                .setParameter("id", id)
+//                .setParameter("user_id", userId)
+//                .getResultList();
+//        return DataAccessUtils.singleResult(result);
     }
 
     @Override

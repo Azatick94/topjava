@@ -1,6 +1,6 @@
 package ru.javawebinar.topjava.service;
 
-import org.junit.AssumptionViolatedException;
+import org.junit.AfterClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.Stopwatch;
@@ -24,6 +24,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import static java.lang.System.lineSeparator;
 import static org.junit.Assert.assertThrows;
 import static ru.javawebinar.topjava.MealTestData.*;
 import static ru.javawebinar.topjava.UserTestData.ADMIN_ID;
@@ -38,35 +39,34 @@ import static ru.javawebinar.topjava.UserTestData.USER_ID;
 public class MealServiceTest {
 
     private static final Logger log = LoggerFactory.getLogger(MealServiceTest.class);
+    private static final StringBuilder sb = new StringBuilder();
 
-    private static void logInfo(Description description, String status, long nanos) {
+    static {
+        sb.append(lineSeparator()).append("--------------------------------");
+        sb.append(lineSeparator()).append("TESTs PERFORMANCE RESULTS:");
+        sb.append(lineSeparator());
+    }
+
+
+    private static void logInfo(Description description, long nanos) {
         String testName = description.getMethodName();
-        log.info(String.format("Test %s %s, spent %d microseconds",
-                testName, status, TimeUnit.NANOSECONDS.toMicros(nanos)));
+        sb.append(String.format("* '%s' - %d milliseconds",
+                testName, TimeUnit.NANOSECONDS.toMillis(nanos))).append(lineSeparator());
     }
 
     @Rule
     public Stopwatch stopwatch = new Stopwatch() {
         @Override
-        protected void succeeded(long nanos, Description description) {
-            logInfo(description, "succeeded", nanos);
-        }
-
-        @Override
-        protected void failed(long nanos, Throwable e, Description description) {
-            logInfo(description, "failed", nanos);
-        }
-
-        @Override
-        protected void skipped(long nanos, AssumptionViolatedException e, Description description) {
-            logInfo(description, "skipped", nanos);
-        }
-
-        @Override
         protected void finished(long nanos, Description description) {
-            logInfo(description, "finished", nanos);
+            logInfo(description, nanos);
         }
     };
+
+    @AfterClass
+    public static void afterClass() {
+        log.info(sb.toString());
+    }
+
 
     @Autowired
     private MealService service;
@@ -142,8 +142,7 @@ public class MealServiceTest {
         List<Meal> mealList = service.getBetweenInclusive(
                 LocalDate.of(2020, Month.JANUARY, 30),
                 LocalDate.of(2020, Month.JANUARY, 30), USER_ID);
-        List<Meal> expected = new ArrayList<>();
-        expected.addAll(Arrays.asList(meal3, meal2, meal1));
+        List<Meal> expected = new ArrayList<>(Arrays.asList(meal3, meal2, meal1));
 
         MEAL_MATCHER.assertMatch(mealList, expected);
     }
