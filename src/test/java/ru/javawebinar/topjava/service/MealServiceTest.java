@@ -19,7 +19,6 @@ import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import java.time.LocalDate;
 import java.time.Month;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -142,8 +141,7 @@ public class MealServiceTest {
         List<Meal> mealList = service.getBetweenInclusive(
                 LocalDate.of(2020, Month.JANUARY, 30),
                 LocalDate.of(2020, Month.JANUARY, 30), USER_ID);
-        List<Meal> expected = new ArrayList<>(Arrays.asList(meal3, meal2, meal1));
-
+        List<Meal> expected = Arrays.asList(meal3, meal2, meal1);
         MEAL_MATCHER.assertMatch(mealList, expected);
     }
 

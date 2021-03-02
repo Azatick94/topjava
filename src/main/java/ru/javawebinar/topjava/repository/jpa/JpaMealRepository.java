@@ -26,35 +26,14 @@ public class JpaMealRepository implements MealRepository {
             em.persist(meal);
             return meal;
         } else {
-            Meal found = em.find(Meal.class, meal.getId());
-            if (found.getUser().getId() == userId) {
-                meal.setUser(found.getUser());
-                return em.merge(meal);
-            } else {
+            Meal mealQueried = get(meal.getId(), userId);
+            if (mealQueried == null) {
                 return null;
+            } else {
+                meal.setUser(mealQueried.getUser());
+                return em.merge(meal);
             }
         }
-//        if (meal.isNew()) {
-//            User u = em.getReference(User.class, userId);
-//            meal.setUser(u);
-//            em.persist(meal);
-//        } else {
-//            int result = em.createNamedQuery(Meal.UPDATE)
-//                    .setParameter("description", meal.getDescription())
-//                    .setParameter("calories", meal.getCalories())
-//                    .setParameter("date_time", meal.getDateTime())
-//                    .setParameter("id", meal.getId())
-//                    .setParameter("user_id", userId)
-//                    .executeUpdate();
-//            if (result == 0) {
-//                return null;
-//            } else {
-//                return meal;
-//            }
-//            //            return em.merge(meal);
-//        }
-//        return meal;
-
     }
 
     @Override
@@ -74,11 +53,6 @@ public class JpaMealRepository implements MealRepository {
         } else {
             return null;
         }
-//        List<Meal> result = em.createNamedQuery(Meal.GET_BY_ID_USER_ID, Meal.class)
-//                .setParameter("id", id)
-//                .setParameter("user_id", userId)
-//                .getResultList();
-//        return DataAccessUtils.singleResult(result);
     }
 
     @Override
