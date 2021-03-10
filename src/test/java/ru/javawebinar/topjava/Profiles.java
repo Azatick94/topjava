@@ -1,19 +1,15 @@
 package ru.javawebinar.topjava;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 import org.springframework.test.context.ActiveProfilesResolver;
 import org.springframework.util.ClassUtils;
 
-import javax.persistence.EntityManager;
-
 public class Profiles {
+
     public static final String
             JDBC = "jdbc",
             JPA = "jpa",
             DATAJPA = "datajpa";
-
-    public static final String REPOSITORY_IMPLEMENTATION = DATAJPA;
 
     public static final String
             POSTGRES_DB = "postgres",
@@ -32,17 +28,17 @@ public class Profiles {
 
     // Selecting which Repository Realization will be chosen
     public static String getRepositoryDBProfile() {
-//
-//        if (ClassUtils.isPresent("ru.javawebinar.topjava.repository.jdbc.JdbcMealRepository", null)) {
-//            return JDBC;
-//        } else if (ClassUtils.isPresent("ru.javawebinar.topjava.repository.jpa.JpaMealRepository", null)) {
-//            return JPA;
-//        } else if (ClassUtils.isPresent("ru.javawebinar.topjava.repository.datajpa.DataJpaMealRepository", null)) {
-//            return DATAJPA;
-//        } else {
-//            throw new IllegalStateException("Bad Repository Realization Profile was Selected");
-//        }
         return DATAJPA;
+//        List<String> namesLst = Arrays.asList(cntx.getBeanDefinitionNames());
+//        if (namesLst.contains("dataJpaMealRepository")) {
+//            return DATAJPA;
+//        } else if (namesLst.contains("jpaMealRepository")) {
+//            return JPA;
+//        } else if (namesLst.contains("jdbcMealRepository")) {
+//            return JDBC;
+//        } else {
+//            throw new IllegalStateException("Could not find correct Repository Realization");
+//        }
     }
 
     //http://stackoverflow.com/questions/23871255/spring-profiles-simple-example-of-activeprofilesresolver
